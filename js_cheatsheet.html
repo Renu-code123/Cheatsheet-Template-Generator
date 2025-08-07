@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One&family=Roboto:wght@100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="prism.css">
+    <script src="prism.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>JavaScript Cheatsheet</title>
+</head>
+<body>
+    <nav>
+        <span class="logo"><img src="copy.png" alt=""></span>
+        <div class="content center">
+            This JavaScript Cheatsheet is For You!
+        </div>
+    </nav>
+    <div class="container">
+        <button onclick="window.print()" style="margin-bottom: 20px; padding: 10px 24px; background: #2196f3; color: #fff; border: none; border-radius: 6px; font-size: 1em; cursor: pointer;">Print Cheatsheet</button>
+    <style>
+    @media print {
+        nav, .cheatsheet-links, button { display: none !important; }
+        body { background: #fff !important; }
+        .container { box-shadow: none !important; }
+        pre, code { background: #f5f5f5 !important; color: #222 !important; }
+        ol, section, h1, h2, h3, h4, h5, h6 { color: #222 !important; }
+    }
+    </style>
+        <h2>JavaScript Cheatsheet</h2>
+        <ol>
+            <li><b>Console Log:</b> Print output to console
+                <pre class="language-js"><code>console.log('Hello, World!');
+</code></pre>
+            </li>
+            <li><b>Variable Declaration:</b> Declare variables
+                <pre class="language-js"><code>let x = 10;
+const y = 20;
+var z = 30;
+</code></pre>
+            </li>
+            <li><b>Function Declaration:</b> Basic function
+                <pre class="language-js"><code>function greet(name) {
+    return 'Hello, ' + name;
+}
+</code></pre>
+            </li>
+            <li><b>Arrow Function:</b> ES6 arrow function
+                <pre class="language-js"><code>const add = (a, b) => a + b;
+</code></pre>
+            </li>
+            <li><b>Array Methods:</b> Common array methods
+                <pre class="language-js"><code>const arr = [1, 2, 3];
+arr.push(4);
+arr.map(x => x * 2);
+arr.filter(x => x > 2);
+</code></pre>
+            </li>
+            <li><b>Object Creation:</b> Create an object
+                <pre class="language-js"><code>const person = {
+    name: 'John',
+    age: 30
+};
+</code></pre>
+            </li>
+            <li><b>DOM Manipulation:</b> Change HTML content
+                <pre class="language-js"><code>document.getElementById('demo').innerHTML = 'Hello JavaScript!';
+</code></pre>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
