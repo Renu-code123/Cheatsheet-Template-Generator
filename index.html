@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One&family=Roboto:wght@100&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="prism.css">
+        <script src="prism.js"></script>
+        <link rel="stylesheet" href="style.css">
+    <title>HTML Cheatsheet </title>
+</head>
+
+<body>
+    <nav>
+        <span class="logo"><img src="copy.png" alt=""></span>
+        <div class="content center">
+            This HTML Cheatsheet is For You!
+        </div>
+    </nav>
+    <div class="container">
+        <div class="cheatsheet-input" style="margin-bottom:32px; background:#f5faff; border-radius:8px; padding:20px;">
+            <h2 style="color:#2196f3; margin-bottom:10px;">Add Your Cheatsheet Entry</h2>
+            <form id="cheatsheetForm" style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end;">
+                <div style="flex:1; min-width:180px;">
+                    <label for="topic" style="font-weight:bold;">Topic:</label><br>
+                    <input type="text" id="topic" name="topic" placeholder="e.g. HTML Table" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc;">
+                </div>
+                <div style="flex:2; min-width:280px;">
+                    <label for="description" style="font-weight:bold;">Description:</label><br>
+                    <input type="text" id="description" name="description" placeholder="Short description" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc;">
+                </div>
+                <div style="flex:2; min-width:280px;">
+                    <label for="code" style="font-weight:bold;">Enter your code:</label><br>
+                    <textarea id="code" name="code" rows="2" placeholder="Paste your code here" style="width:100%; padding:8px; border-radius:4px; border:1px solid #ccc;"></textarea>
+                </div>
+                <div style="flex-basis:100%; display:flex; align-items:center; margin-top:10px;">
+                    <button type="button" onclick="addCheat()" style="background:#2196f3; color:#fff; border:none; border-radius:6px; padding:10px 24px; font-size:1em; cursor:pointer; margin-left:0;">Add Entry</button>
+                </div>
+            </form>
+        </div>
+        <button onclick="window.print()" style="margin-bottom: 20px; padding: 10px 24px; background: #2196f3; color: #fff; border: none; border-radius: 6px; font-size: 1em; cursor: pointer;">Print Cheatsheet</button>
+        <button onclick="copyCheatsheet()" style="margin-bottom: 20px; margin-left:10px; padding: 10px 24px; background: #43a047; color: #fff; border: none; border-radius: 6px; font-size: 1em; cursor: pointer;">Copy Cheatsheet</button>
+        <style>
+        .cheat-number {
+            font-weight: bold;
+            color: #fbc02d;
+            margin-right: 8px;
+        }
+        .cheatsheet-input { box-shadow: 0 1px 8px #2196f322; }
+        #cheatsheetForm input, #cheatsheetForm textarea { font-size: 1em; }
+        .cheatsheet-entry { margin-bottom: 18px; background: #111; border-radius: 6px; padding: 12px 16px; box-shadow: 0 1px 4px #2196f311; color: #fff; }
+        .cheatsheet-entry b { color: #2196f3; }
+        .cheatsheet-entry pre { background: #222; border-radius: 4px; padding: 8px; margin-top: 8px; color: #fff; }
+        @media print {
+            nav, .cheatsheet-links, button, .cheatsheet-input { display: none !important; }
+            body { background: #fff !important; }
+            .container { box-shadow: none !important; }
+            pre, code { background: #f5f5f5 !important; color: #222 !important; }
+            ol, section, h1, h2, h3, h4, h5, h6 { color: #222 !important; }
+        }
+        </style>
+        <script>
+        // Add new entry to cheatsheet
+        function addCheat() {
+            var topic = document.getElementById('topic').value.trim();
+            var desc = document.getElementById('description').value.trim();
+            var code = document.getElementById('code').value.trim();
+            if (!topic || !desc || !code) {
+                alert('Please fill all fields!');
+                return;
+            }
+            var ol = document.getElementById('cheatsheetList');
+            var li = document.createElement('li');
+            // Numbering starts after static entries (15)
+            var entryNumber = 15 + ol.children.length + 1;
+            li.innerHTML = `
+                <span class="cheat-number">${entryNumber}.</span>
+                <b>${topic}:</b> ${desc}
+                <pre class="language-html"><code class="language-html">${code.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>
+                <button class="cheatsheet-save-btn" onclick="saveEntry(this)" style="margin-left:10px; background:#43a047; color:#fff; border:none; border-radius:4px; padding:4px 12px; font-size:0.95em; cursor:pointer;">Save</button>
+                <button class="cheatsheet-remove-btn" onclick="removeEntry(this)" style="margin-left:6px; background:#e53935; color:#fff; border:none; border-radius:4px; padding:4px 12px; font-size:0.95em; cursor:pointer;">Remove</button>
+            `;
+            li.className = 'cheatsheet-entry';
+            ol.appendChild(li);
+            // Highlight code using Prism.js
+            var codeBlock = li.querySelector('code');
+            if (window.Prism && codeBlock) {
+                Prism.highlightElement(codeBlock);
+            }
+            document.getElementById('topic').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('code').value = '';
+        }
+
+        // Save entry (for now, just show a message)
+        function saveEntry(btn) {
+            btn.disabled = true;
+            btn.textContent = 'Saved';
+            setTimeout(function() {
+                btn.disabled = false;
+                btn.textContent = 'Save';
+            }, 1500);
+        }
+
+        // Remove entry
+        function removeEntry(btn) {
+            var li = btn.closest('li');
+            if (li) {
+                li.remove();
+                // Re-number dynamic entries
+                var ol = document.getElementById('cheatsheetList');
+                for (var i = 0; i < ol.children.length; i++) {
+                    var numSpan = ol.children[i].querySelector('.cheat-number');
+                    if (numSpan) {
+                        numSpan.textContent = (15 + i + 1) + '.';
+                    }
+                }
+            }
+        }
+        // Copy cheatsheet to clipboard
+        function copyCheatsheet() {
+            var ol = document.getElementById('cheatsheetList');
+            var temp = document.createElement('textarea');
+            temp.value = ol.innerText;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            alert('Cheatsheet copied to clipboard!');
+        }
+        </script>
+        <div class="cheatsheet-links" style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <a href="css_cheatsheet.html" style="text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <img src="copy.svg" alt="CSS Icon" style="width: 32px; height: 32px;">
+                <span style="font-size: 1.2em; font-weight: bold; color: #2196f3;">CSS Cheatsheet</span>
+            </a>
+            <a href="js_cheatsheet.html" style="text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <img src="copy.svg" alt="JS Icon" style="width: 32px; height: 32px;">
+                <span style="font-size: 1.2em; font-weight: bold; color: #fbc02d;">JavaScript Cheatsheet</span>
+            </a>
+        </div>
+        <h2 style="color:#2196f3; margin-top:32px;">HTML Cheatsheet</h2>
+        <ol class="static-cheatsheet">
+            <li class="cheatsheet-entry"><span class="cheat-number">1.</span><b>HTML Boilerplate:</b> Basic HTML structure
+                <pre class="language-html"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">2.</span><b>Ordered List:</b> Basic OL tag
+                <pre class="language-html"><code>&lt;ol&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">3.</span><b>Unordered List:</b> Basic UL tag
+                <pre class="language-html"><code>&lt;ul&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">4.</span><b>Link:</b> Anchor tag for hyperlinks
+                <pre class="language-html"><code>&lt;a href="https://example.com"&gt;Visit Example&lt;/a&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">5.</span><b>Image:</b> Display an image
+                <pre class="language-html"><code>&lt;img src="image.jpg" alt="Description"&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">6.</span><b>Table:</b> Basic table structure
+                <pre class="language-html"><code>&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Header 1&lt;/th&gt;
+    &lt;th&gt;Header 2&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Cell 1&lt;/td&gt;
+    &lt;td&gt;Cell 2&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">7.</span><b>Input:</b> Basic input field
+                <pre class="language-html"><code>&lt;input type="text" placeholder="Enter text"&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">8.</span><b>Button:</b> Create a button
+                <pre class="language-html"><code>&lt;button&gt;Click Me&lt;/button&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">9.</span><b>Comment:</b> Add a comment
+                <pre class="language-html"><code>&lt;!-- This is a comment --&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">10.</span><b>Form:</b> Basic form structure
+                <pre class="language-html"><code>&lt;form action="#" method="post"&gt;
+  &lt;input type="text" name="name"&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">11.</span><b>Div:</b> Container element
+                <pre class="language-html"><code>&lt;div&gt;Content here&lt;/div&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">12.</span><b>Span:</b> Inline container
+                <pre class="language-html"><code>&lt;span&gt;Inline content&lt;/span&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">13.</span><b>Meta Tag:</b> Set viewport
+                <pre class="language-html"><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">14.</span><b>Script Tag:</b> Add JavaScript
+                <pre class="language-html"><code>&lt;script&gt;
+  // JS code here
+&lt;/script&gt;</code></pre>
+            </li>
+            <li class="cheatsheet-entry"><span class="cheat-number">15.</span><b>Style Tag:</b> Add CSS
+                <pre class="language-html"><code>&lt;style&gt;
+  /* CSS here */
+&lt;/style&gt;</code></pre>
+            </li>
+        </ol>
+        <!-- Dynamic cheatsheet entries will appear here -->
+        <ol id="cheatsheetList"></ol>
+</div>
+</body>
+
+</html>
